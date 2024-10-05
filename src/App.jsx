@@ -1,12 +1,16 @@
 /*Q1. JS Variable needs to be created here. Below variable is just an example. Try to add more attributes.*/
 const initialTravellers = [
   {
-    id: 1, name: 'Jack', phone: 88885555,
-    bookingTime: new Date(),
+    id: 1, 
+    name: 'Jack', 
+    phone: 88885555,
+    bookingTime: new Date()
   },
   {
-    id: 2, name: 'Rose', phone: 88884444,
-    bookingTime: new Date(),
+    id: 2, 
+    name: 'Rose', 
+    phone: 88884444,
+    bookingTime: new Date()
   },
 ];
 
@@ -16,6 +20,10 @@ function TravellerRow(props) {
   return (
     <tr>
 	  {/*Q3. Placeholder for rendering one row of a table with required traveller attribute values.*/}
+    <td>{props.traveller.id}</td>
+    <td>{props.traveller.name}</td>
+    <td>{props.traveller.phone}</td>
+    <td>{props.traveller.bookingTime.toLocaleString()}</td>
     </tr>
   );
 }
@@ -37,6 +45,7 @@ function Display(props) {
       </thead>
       <tbody>
         {/*Q3. write code to call the JS variable defined at the top of this function to render table rows.*/}
+        {props.travellers.map(traveller => (<TravellerRow traveller={traveller} />))}
       </tbody>
     </table>
   );
@@ -126,18 +135,22 @@ class TicketToRide extends React.Component {
   deleteTraveller(passenger) {
 	  /*Q5. Write code to delete a passenger from the traveller state variable.*/
   }
+
   render() {
     return (
       <div>
         <h1>Ticket To Ride</h1>
 	<div>
 	    {/*Q2. Code for Navigation bar. Use basic buttons to create a nav bar. Use states to manage selection.*/}
+      <button onClick={() => this.setSelector(1)}>Display Travellers</button>
+      <button onClick={() => this.setSelector(2)}>Add Traveller</button>
+      <button onClick={() => this.setSelector(3)}>Delete Traveller</button>
 	</div>
 	<div>
 		{/*Only one of the below four divisions is rendered based on the button clicked by the user.*/}
 		{/*Q2 and Q6. Code to call Instance that draws Homepage. Homepage shows Visual Representation of free seats.*/}
 		{/*Q3. Code to call component that Displays Travellers.*/}
-		
+		<Display travellers={this.state.travellers} />
 		{/*Q4. Code to call the component that adds a traveller.*/}
 		{/*Q5. Code to call the component that deletes a traveller based on a given attribute.*/}
 	</div>
