@@ -4,13 +4,25 @@ const initialTravellers = [
     id: 1, 
     name: 'Jack', 
     phone: 88885555,
-    bookingTime: new Date()
+    bookingTime: new Date(),
+    seatNumber: 'A1',  // seat no
+    departure: 'Singapore',  // start station
+    destination: 'Bangkok',  // end station
+    ticketPrice: 120,  // ticket price
+    trainNumber: 'SG101',  // train no
+    status: 'Confirmed'  // ticket status
   },
   {
     id: 2, 
     name: 'Rose', 
     phone: 88884444,
-    bookingTime: new Date()
+    bookingTime: new Date(),
+    seatNumber: 'A2',
+    departure: 'Singapore',
+    destination: 'Bangkok',
+    ticketPrice: 120,
+    trainNumber: 'SG101',
+    status: 'Confirmed'
   },
 ];
 
@@ -24,6 +36,12 @@ function TravellerRow(props) {
     <td>{props.traveller.name}</td>
     <td>{props.traveller.phone}</td>
     <td>{props.traveller.bookingTime.toLocaleString()}</td>
+    <td>{props.traveller.seatNumber}</td>
+    <td>{props.traveller.departure}</td>
+    <td>{props.traveller.destination}</td>
+    <td>{props.traveller.ticketPrice}</td>
+    <td>{props.traveller.trainNumber}</td>
+    <td>{props.traveller.status}</td>
     </tr>
   );
 }
@@ -41,6 +59,12 @@ function Display(props) {
           <th>Name</th>
           <th>Phone</th>
           <th>Booking Time</th>
+          <th>Seat Number</th>
+          <th>Departure</th>
+          <th>Destination</th>
+          <th>Ticket Price</th>
+          <th>Train Number</th>
+          <th>Status</th>
         </tr>
       </thead>
       <tbody>
