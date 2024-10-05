@@ -3,28 +3,28 @@ const initialTravellers = [
   {
     id: 1, 
     name: 'Jack', 
-    phone: 88885555,
+    phone: '88885555',
     bookingTime: new Date(),
     seatNumber: 'A1',  // seat no
     departure: 'Singapore',  // start station
     destination: 'Bangkok',  // end station
     ticketPrice: 120,  // ticket price
-    trainNumber: 'SG101',  // train no
-    status: 'Confirmed'  // ticket status
+    trainNumber: 'SG101'  // train no
   },
   {
     id: 2, 
     name: 'Rose', 
-    phone: 88884444,
+    phone: '88884444',
     bookingTime: new Date(),
     seatNumber: 'A2',
     departure: 'Singapore',
     destination: 'Bangkok',
     ticketPrice: 120,
-    trainNumber: 'SG101',
-    status: 'Confirmed'
+    trainNumber: 'SG101'
   },
 ];
+
+var nextid = 3; // Variable to keep track of the traveller ID.
 
 
 function TravellerRow(props) {
@@ -41,7 +41,6 @@ function TravellerRow(props) {
     <td>{props.traveller.destination}</td>
     <td>{props.traveller.ticketPrice}</td>
     <td>{props.traveller.trainNumber}</td>
-    <td>{props.traveller.status}</td>
     </tr>
   );
 }
@@ -64,7 +63,6 @@ function Display(props) {
           <th>Destination</th>
           <th>Ticket Price</th>
           <th>Train Number</th>
-          <th>Status</th>
         </tr>
       </thead>
       <tbody>
@@ -78,20 +76,91 @@ function Display(props) {
 class Add extends React.Component {
   constructor() {
     super();
+    this.state = {
+      id: nextid,
+      name: '',
+      phone: '',
+      bookingTime: new Date(),
+      seatNumber: '',  // seat no
+      departure: '',  // start station
+      destination: '',  // end station
+      ticketPrice: 0,  // ticket price
+      trainNumber: ''  // train no
+    };
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   handleSubmit(e) {
     e.preventDefault();
     /*Q4. Fetch the passenger details from the add form and call bookTraveller()*/
+
+    this.props.bookTraveller(this.state);
+    nextid++;
+
+    // Reset the form fields
+    this.setState({
+      id: nextid,
+      name: '',
+      phone: '',
+      bookingTime: new Date(),
+      seatNumber: '',  // seat no
+      departure: '',  // start station
+      destination: '',  // end station
+      ticketPrice: 0,  // ticket price
+      trainNumber: ''  // train no
+    });
+  }
+
+  handleChange(e) {
+    this.setState({ [e.target.name]: e.target.value }); // Update the state variable based on the input value.
   }
 
   render() {
     return (
       <form name="addTraveller" onSubmit={this.handleSubmit}>
 	    {/*Q4. Placeholder to enter passenger details. Below code is just an example.*/}
-        <input type="text" name="travellername" placeholder="Name" />
-        <button>Add</button>
+        <label>Name:</label>
+        <input type="text" name="name" placeholder="Name" value={this.state.name} onChange={this.handleChange} required/>
+        <label>Phone:</label>
+        <input type="tel" name="phone" placeholder="Phone" value={this.state.phone} onChange={this.handleChange} required/>
+
+        <label>Seat Number:</label>
+        <select name="seatNumber" value={this.state.seatNumber} onChange={this.handleChange}>
+          <option value="A1">A1</option>
+          <option value="A2">A2</option>
+          <option value="A3">A3</option>
+          <option value="B1">B1</option>
+          <option value="B2">B2</option>
+          <option value="B3">B3</option>
+          <option value="C1">C1</option>
+          <option value="C2">C2</option>
+          <option value="C3">C3</option>
+          <option value="D1">D1</option>
+          <option value="D2">D2</option>
+          <option value="D3">D3</option>
+        </select>
+
+        <label>Departure:</label>
+        <select name="departure" value={this.state.departure} onChange={this.handleChange}>
+          <option value="Singapore">Singapore</option>
+          <option value="Kuala Lumpur">Kuala Lumpur</option>
+          <option value="Bangkok">Bangkok</option>
+        </select>
+
+        <label>Destination:</label>
+        <select name="destination" value={this.state.destination} onChange={this.handleChange}>
+          <option value="Singapore">Singapore</option>
+          <option value="Kuala Lumpur">Kuala Lumpur</option>
+          <option value="Bangkok">Bangkok</option>
+        </select>
+
+        <label>Ticket Price:</label>
+        <input type="number" name="ticketPrice" placeholder="Ticket Price" value={this.state.ticketPrice} onChange={this.handleChange} required/>
+        <label>Train Number:</label>
+        <input type="text" name="trainNumber" placeholder="Train Number" value={this.state.trainNumber} onChange={this.handleChange} required/>
+
+        <button type="submit">Add</button>
       </form>
     );
   }
@@ -154,6 +223,7 @@ class TicketToRide extends React.Component {
 
   bookTraveller(passenger) {
 	    /*Q4. Write code to add a passenger to the traveller state variable.*/
+      this.setState({travellers: this.state.travellers.concat(passenger)});
   }
 
   deleteTraveller(passenger) {
@@ -176,6 +246,7 @@ class TicketToRide extends React.Component {
 		{/*Q3. Code to call component that Displays Travellers.*/}
 		<Display travellers={this.state.travellers} />
 		{/*Q4. Code to call the component that adds a traveller.*/}
+    <Add bookTraveller={this.bookTraveller} />
 		{/*Q5. Code to call the component that deletes a traveller based on a given attribute.*/}
 	</div>
       </div>
