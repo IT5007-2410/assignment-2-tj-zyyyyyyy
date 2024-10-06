@@ -6,10 +6,6 @@ const initialTravellers = [
         phone: '88885555',
         bookingTime: new Date(),
         seatNumber: 'A1',  // seat no
-        departure: 'Singapore',  // start station
-        destination: 'Bangkok',  // end station
-        ticketPrice: 120,  // ticket price
-        trainNumber: 'SG101'  // train no
     },
     {
         id: 2,
@@ -17,10 +13,6 @@ const initialTravellers = [
         phone: '88884444',
         bookingTime: new Date(),
         seatNumber: 'A2',
-        departure: 'Singapore',
-        destination: 'Bangkok',
-        ticketPrice: 120,
-        trainNumber: 'SG101'
     },
 ];
 
@@ -37,10 +29,6 @@ function TravellerRow(props) {
             <td>{props.traveller.phone}</td>
             <td>{props.traveller.bookingTime.toLocaleString()}</td>
             <td>{props.traveller.seatNumber}</td>
-            <td>{props.traveller.departure}</td>
-            <td>{props.traveller.destination}</td>
-            <td>{props.traveller.ticketPrice}</td>
-            <td>{props.traveller.trainNumber}</td>
         </tr>
     );
 }
@@ -59,15 +47,11 @@ function Display(props) {
                     <th>Phone</th>
                     <th>Booking Time</th>
                     <th>Seat Number</th>
-                    <th>Departure</th>
-                    <th>Destination</th>
-                    <th>Ticket Price</th>
-                    <th>Train Number</th>
                 </tr>
             </thead>
             <tbody>
                 {/*Q3. write code to call the JS variable defined at the top of this function to render table rows.*/}
-                {props.travellers.map(traveller => (<TravellerRow traveller={traveller} />))}
+                {props.travellers.map(traveller => (<TravellerRow key={traveller.id} traveller={traveller} />))}
             </tbody>
         </table>
     );
@@ -81,11 +65,7 @@ class Add extends React.Component {
             name: '',
             phone: '',
             bookingTime: new Date(),
-            seatNumber: '',  // seat no
-            departure: '',  // start station
-            destination: '',  // end station
-            ticketPrice: 0,  // ticket price
-            trainNumber: ''  // train no
+            seatNumber: 'A1'  // default value set to the first option
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -95,21 +75,20 @@ class Add extends React.Component {
         e.preventDefault();
         /*Q4. Fetch the passenger details from the add form and call bookTraveller()*/
 
-        this.props.bookTraveller(this.state);
-        nextid++;
-
+        if (this.props.seats[this.state.seatNumber]) {
+            alert("Seat is already taken. Please choose another seat.");
+        } else {
+            this.props.bookTraveller(this.state);
+            nextid++;
+        }
         // Reset the form fields
         this.setState({
-            id: nextid,
-            name: '',
-            phone: '',
-            bookingTime: new Date(),
-            seatNumber: '',  // seat no
-            departure: '',  // start station
-            destination: '',  // end station
-            ticketPrice: 0,  // ticket price
-            trainNumber: ''  // train no
-        });
+          id: nextid,
+          name: '',
+          phone: '',
+          bookingTime: new Date(),
+          seatNumber: 'A1'  // default value set to the first option
+      });
     }
 
     handleChange(e) {
@@ -130,35 +109,14 @@ class Add extends React.Component {
                     <option value="A1">A1</option>
                     <option value="A2">A2</option>
                     <option value="A3">A3</option>
+                    <option value="A4">A4</option>
+                    <option value="A5">A5</option>
                     <option value="B1">B1</option>
                     <option value="B2">B2</option>
                     <option value="B3">B3</option>
-                    <option value="C1">C1</option>
-                    <option value="C2">C2</option>
-                    <option value="C3">C3</option>
-                    <option value="D1">D1</option>
-                    <option value="D2">D2</option>
-                    <option value="D3">D3</option>
+                    <option value="B4">B4</option>
+                    <option value="B5">B5</option>
                 </select>
-
-                <label>Departure:</label>
-                <select name="departure" value={this.state.departure} onChange={this.handleChange}>
-                    <option value="Singapore">Singapore</option>
-                    <option value="Kuala Lumpur">Kuala Lumpur</option>
-                    <option value="Bangkok">Bangkok</option>
-                </select>
-
-                <label>Destination:</label>
-                <select name="destination" value={this.state.destination} onChange={this.handleChange}>
-                    <option value="Singapore">Singapore</option>
-                    <option value="Kuala Lumpur">Kuala Lumpur</option>
-                    <option value="Bangkok">Bangkok</option>
-                </select>
-
-                <label>Ticket Price:</label>
-                <input type="number" name="ticketPrice" placeholder="Ticket Price" value={this.state.ticketPrice} onChange={this.handleChange} required />
-                <label>Train Number:</label>
-                <input type="text" name="trainNumber" placeholder="Train Number" value={this.state.trainNumber} onChange={this.handleChange} required />
 
                 <button type="submit">Add</button>
             </form>
@@ -217,10 +175,17 @@ class Homepage extends React.Component {
             </div>);
     }
 }
+
 class TicketToRide extends React.Component {
     constructor() {
         super();
-        this.state = { travellers: [], selector: 1 };
+        this.state = {
+            seats: {
+                A1: true, A2: true, A3: false, A4: false, A5: false,
+                B1: false, B2: false, B3: false, B4: false, B5: false,
+            },
+            travellers: [], selector: 1
+        };
         this.bookTraveller = this.bookTraveller.bind(this);
         this.deleteTraveller = this.deleteTraveller.bind(this);
     }
@@ -241,12 +206,14 @@ class TicketToRide extends React.Component {
     bookTraveller(passenger) {
         /*Q4. Write code to add a passenger to the traveller state variable.*/
         this.setState({ travellers: this.state.travellers.concat(passenger) });
+        this.setState({ seats: { ...this.state.seats, [passenger.seatNumber]: true } }); // Update the seat status
     }
 
     deleteTraveller(passenger) {
         /*Q5. Write code to delete a passenger from the traveller state variable.*/
         this.setState({ travellers: this.state.travellers.filter(traveller => traveller.id !== parseInt(passenger.id)) });
-    }
+        this.setState({ seats: { ...this.state.seats, [this.state.travellers.find(traveller => traveller.id === parseInt(passenger.id)).seatNumber]: false } }); // Update the seat status
+      }
 
     render() {
         return (
@@ -264,9 +231,9 @@ class TicketToRide extends React.Component {
                     {/*Q3. Code to call component that Displays Travellers.*/}
                     <Display travellers={this.state.travellers} />
                     {/*Q4. Code to call the component that adds a traveller.*/}
-                    <Add bookTraveller={this.bookTraveller} />
+                    <Add bookTraveller={this.bookTraveller} seats={this.state.seats} />
                     {/*Q5. Code to call the component that deletes a traveller based on a given attribute.*/}
-                    <Delete deleteTraveller={this.deleteTraveller} travellers={this.state.travellers} />
+                    <Delete deleteTraveller={this.deleteTraveller} travellers={this.state.travellers} seats={this.state.seats} />
                 </div>
             </div>
         );
