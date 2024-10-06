@@ -83,12 +83,12 @@ class Add extends React.Component {
         }
         // Reset the form fields
         this.setState({
-          id: nextid,
-          name: '',
-          phone: '',
-          bookingTime: new Date(),
-          seatNumber: 'A1'  // default value set to the first option
-      });
+            id: nextid,
+            name: '',
+            phone: '',
+            bookingTime: new Date(),
+            seatNumber: 'A1'  // default value set to the first option
+        });
     }
 
     handleChange(e) {
@@ -169,9 +169,39 @@ class Homepage extends React.Component {
         super();
     }
     render() {
+        const { seats } = this.props;
+        const gridStyle = {
+            display: 'grid',
+            gridTemplateColumns: 'repeat(5, 1fr)',  // 5 columns
+            gap: '10px',  // gap between the columns
+        }; // CSS for the grid layout
+        const baseSeatStyle = {
+            padding: '20px',
+            color: 'white',
+            textAlign: 'center',
+            borderRadius: '4px',
+            cursor: 'pointer',
+        }; // CSS for the base seat style
+
+
         return (
             <div>
                 {/*Q2. Placeholder for Homepage code that shows free seats visually.*/}
+                <h2>Seat Availability</h2>
+                <div style={gridStyle}>
+                    {Object.keys(seats).map(seat => {
+                        const seatStyle = {
+                            ...baseSeatStyle,
+                            backgroundColor: seats[seat] ? 'green' : 'grey'  // green for booked, grey for free
+                        };
+
+                        return (
+                            <div key={seat} style={seatStyle}>
+                                {seat}
+                            </div>
+                        );
+                    })}
+                </div>
             </div>);
     }
 }
@@ -213,7 +243,7 @@ class TicketToRide extends React.Component {
         /*Q5. Write code to delete a passenger from the traveller state variable.*/
         this.setState({ travellers: this.state.travellers.filter(traveller => traveller.id !== parseInt(passenger.id)) });
         this.setState({ seats: { ...this.state.seats, [this.state.travellers.find(traveller => traveller.id === parseInt(passenger.id)).seatNumber]: false } }); // Update the seat status
-      }
+    }
 
     render() {
         return (
@@ -228,6 +258,7 @@ class TicketToRide extends React.Component {
                 <div>
                     {/*Only one of the below four divisions is rendered based on the button clicked by the user.*/}
                     {/*Q2 and Q6. Code to call Instance that draws Homepage. Homepage shows Visual Representation of free seats.*/}
+                    <Homepage seats={this.state.seats} />
                     {/*Q3. Code to call component that Displays Travellers.*/}
                     <Display travellers={this.state.travellers} />
                     {/*Q4. Code to call the component that adds a traveller.*/}
